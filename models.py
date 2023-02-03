@@ -9,6 +9,7 @@ session = Session()
 Base = declarative_base()
 
 class Product(Base):
+    __tablename__ = 'Products'
     product_id = Column(Integer, primary_key= True)
     product_name = Column('Name',String )
     product_quantity = Column('Quantity', Integer)
