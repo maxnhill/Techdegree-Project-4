@@ -1,5 +1,5 @@
 from sqlalchemy import (create_engine, Column, 
-                        String, Integer, Date, UniqueConstraint)
+                        String, Integer, Date)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 engine = create_engine('sqlite:///inventory.db.', echo = False)
@@ -17,5 +17,7 @@ class Product(Base):
 
 def __repr__(self):
         return (f'Name: {self.product_name} Price:{self.product_price} Quantity: {self.product_quantity}  Date Updated: {self.date_updated}')
+        
+Base.metadata.create_all(engine)
 
 

@@ -1,4 +1,5 @@
 from models import (Base, session, Product, engine)
+import sqlite3
 import datetime
 import csv
 import time
@@ -37,13 +38,11 @@ def clean_date(date_str):
         return return_date
 
 
-
 def clean_price(price_str):
     cleaned_price = float(price_str.strip("$"))
     cleaned_price = float(cleaned_price)
     cleaned_price = int(cleaned_price * 100)
     return cleaned_price
-
 
 
 def clean_id(id_str, options):
@@ -84,6 +83,23 @@ def clean_data(data):
     return new_data
 
 
+def backup():
+    with open('inventory_backup.csv', 'w', newline= '') as csvfile:
+        column_names = ['product_id', 'product_name', 'product_price', 'product_price', 'product_quantity', 'date_updated']
+        backupwriter = csv.DictWriter(csvfile, fieldnames=column_names) 
+        backupwriter.writeheader()
+        products = session.query(Product).all()
+        for product in products:
+            product_dict = product.__dict__
+            if "_sa_instance_state" in product_dict:
+                del product_dict["_sa_instance_state"]
+            backupwriter.writerow(product_dict)
+    time.sleep(1.5)
+    print("Backing up..........")
+    time.sleep(2)
+    print("File backed up!")
+    time.sleep(1.5)
+
     
 def add_csv():
     with open('inventory.csv') as csvfile:
@@ -96,6 +112,7 @@ def add_csv():
                                     product_quantity = row['product_quantity'], date_updated = row['date_updated']))
                 session.add(new_product)
         session.commit()
+    
 
 
 def app():
@@ -125,20 +142,39 @@ def app():
             input('Press ENTER to continue')
 
          elif choice == 'a':
-            pass
+            product_name = input('Product Name: ')
+            product_quantity = input('Product Quantity: ')
+            price_error = True
+            while price_error:
+                price = input ('Price (Example: 4.59): ')
+                price = clean_price(price)
+                today_date = datetime.datetime.now().date()
+                if type(price) == int:
+                    price_error = False
+            added_product =Product( product_name = product_name, product_price = price, 
+                            product_quantity = product_quantity, date_updated = today_date)
+            session.add(added_product)
+            session.commit()
+            time.sleep(1.5)
+            print('Product Added!')
+            time.sleep(1.5)
 
          elif choice ==  'b':
-            pass
+            backup()
 
          else:
+            time.sleep(1.5)
             print("Inventory Closing: Goodbye!")
+            time.sleep(1.5)
             app_running = False
+
         
      
 if __name__ == "__main__":
-    Base.metadata.create_all(engine)
     add_csv()
     app()
+    
+    
 
    
     
