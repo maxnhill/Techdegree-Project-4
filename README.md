@@ -1,6 +1,5 @@
 # Techdegree-Project-4
-
-The code provided is a simple inventory management system that allows users to view and add products to a database. The code uses Python and SQLite to manage the database, and SQLAlchemy is used as an ORM to interact with the database.
+This is a simple inventory management system that allows users to view and add products to a database. The code uses Python and SQLite to manage the database, and SQLAlchemy is used as an ORM to interact with the database.
 
 Instructions on how to work with the game:
 
